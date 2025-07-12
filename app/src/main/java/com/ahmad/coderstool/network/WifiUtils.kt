@@ -1,4 +1,4 @@
-package com.example.coderstool.network
+package com.ahmad.coderstool.network
 
 import android.content.Context
 import android.net.ConnectivityManager

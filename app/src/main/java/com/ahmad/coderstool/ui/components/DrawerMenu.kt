@@ -1,4 +1,4 @@
-package com.example.coderstool.ui.components
+package com.ahmad.coderstool.ui.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*

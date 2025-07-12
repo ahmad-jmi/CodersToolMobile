@@ -1,4 +1,4 @@
-package com.example.coderstool.ui
+package com.ahmad.coderstool.ui
 
 import android.content.Context
 import android.content.Intent
@@ -9,25 +9,30 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.example.coderstool.network.isWifiConnected
-import com.example.coderstool.ui.components.DrawerMenu
-import com.example.coderstool.ui.components.TopBar
-import com.example.coderstool.ui.screens.*
+import com.ahmad.coderstool.ui.screens.HomeScreen
+import com.ahmad.coderstool.network.isWifiConnected
+import com.ahmad.coderstool.ui.components.DrawerMenu
+import com.ahmad.coderstool.ui.components.TopBar
+import com.ahmad.coderstool.ui.screens.AboutScreen
+import com.ahmad.coderstool.ui.screens.FeatureScreen
+import com.ahmad.coderstool.ui.screens.SetupScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(startOnScreen: String = "Home") {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val screenHistory = remember { mutableStateListOf("Home") }
+    // 👇 Start with the screen passed as a parameter
+    val screenHistory = remember { mutableStateListOf(startOnScreen) }
     val currentScreen = screenHistory.last()
 
     var isConnected by remember { mutableStateOf(false) }
 
+    // Poll for Wi-Fi status only on Setup screen
     LaunchedEffect(currentScreen) {
         if (currentScreen == "Setup") {
             while (true) {
@@ -37,6 +42,7 @@ fun MainScreen() {
         }
     }
 
+    // Back press navigates up in the screen stack
     BackHandler(enabled = screenHistory.size > 1) {
         screenHistory.removeAt(screenHistory.size - 1)
     }
@@ -62,9 +68,10 @@ fun MainScreen() {
                 )
             }
         ) { padding ->
-            Box(modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
+            Box(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxSize()
             ) {
                 when (currentScreen) {
                     "Home" -> HomeScreen(onItemClick = {

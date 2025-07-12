@@ -1,4 +1,4 @@
-package com.example.coderstool.ui.components
+package com.ahmad.coderstool.ui.components
 
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
@@ -32,7 +32,7 @@ fun TopBar(
                     ),
                     elevation = ButtonDefaults.buttonElevation(4.dp)
                 ) {
-                    Text(if (isConnected) "Connected" else "Disconnected")
+                    Text(if (isConnected) "WiFi Connected" else "WiFi Disconnected")
                 }
             }
         }

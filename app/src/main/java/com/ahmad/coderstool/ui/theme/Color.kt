@@ -1,4 +1,4 @@
-package com.example.coderstool.ui.theme
+package com.ahmad.coderstool.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

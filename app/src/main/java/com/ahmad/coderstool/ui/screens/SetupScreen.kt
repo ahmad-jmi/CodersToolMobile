@@ -1,11 +1,11 @@
-package com.example.coderstool.ui.screens
+package com.ahmad.coderstool.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.coderstool.network.isWifiConnected
+import com.ahmad.coderstool.network.isWifiConnected
 import kotlinx.coroutines.delay
 
 @Composable
