@@ -1,12 +1,53 @@
 package com.example.coderstool.ui.screens
 
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import android.content.Context
+import android.content.Intent
+import android.provider.Settings
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.padding
+import com.example.coderstool.network.isWifiConnected
+import kotlinx.coroutines.delay
 
 @Composable
-fun SetupScreen() {
-    Text("This is the setup page", modifier = Modifier.padding(16.dp))
+fun SetupScreen(
+) {
+    val context = LocalContext.current
+    var isConnected by remember { mutableStateOf(false) }
+
+    // 🟢 Poll every 5 seconds to check Wi-Fi status
+    LaunchedEffect(Unit) {
+        while (true) {
+            val status = isWifiConnected(context)
+            if (isConnected != status) {
+                isConnected = status
+            }
+            delay(5000L) // check every 5 seconds
+        }
+    }
+
+    SetupContent()
+}
+
+@Composable
+private fun SetupContent() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(32.dp))
+        // No body content right now
+    }
+}
+
+private fun openWifiSettings(context: Context) {
+    context.startActivity(
+        Intent(Settings.ACTION_WIFI_SETTINGS).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+    )
 }
