@@ -13,7 +13,7 @@ fun HomeScreen(onItemClick: (String) -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val items = listOf("Text to Text", "Splitwise", "Coders Meet", "Plans & To-Do")
+        val items = listOf("Broadcast", "SplitWise", "Coders Meet", "Plans & To-Do")
         items.forEach {
             Button(
                 onClick = { onItemClick(it) },
