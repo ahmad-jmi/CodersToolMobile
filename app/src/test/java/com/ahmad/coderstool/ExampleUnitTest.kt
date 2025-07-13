@@ -1,4 +1,4 @@
-package com.example.coderstool
+package com.ahmad.coderstool
 
 import org.junit.Test
 

@@ -14,6 +14,7 @@ import com.ahmad.coderstool.network.isWifiConnected
 import com.ahmad.coderstool.ui.components.DrawerMenu
 import com.ahmad.coderstool.ui.components.TopBar
 import com.ahmad.coderstool.ui.screens.AboutScreen
+import com.ahmad.coderstool.ui.screens.LogsScreen
 import com.ahmad.coderstool.ui.screens.FeatureScreen
 import com.ahmad.coderstool.ui.screens.SetupScreen
 import kotlinx.coroutines.delay
@@ -78,6 +79,7 @@ fun MainScreen(startOnScreen: String = "Home") {
                         if (it != currentScreen) screenHistory.add(it)
                     })
                     "Setup" -> SetupScreen()
+                    "Logs" -> LogsScreen()
                     "About" -> AboutScreen()
                     else -> FeatureScreen(currentScreen)
                 }

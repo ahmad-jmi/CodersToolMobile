@@ -1,6 +1,6 @@
 package com.ahmad.coderstool.ui.components
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,13 +9,20 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DrawerMenu(current: String, onSelect: (String) -> Unit) {
     ModalDrawerSheet {
-        Text("Menu", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(16.dp))
+        Text(
+            text = "Menu",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(16.dp)
+        )
         Divider()
-        listOf("Home", "Setup", "About").forEach {
+
+        val menuItems = listOf("Home", "Setup", "Logs", "About")
+        menuItems.forEach { item ->
             NavigationDrawerItem(
-                label = { Text(it) },
-                selected = it == current,
-                onClick = { onSelect(it) }
+                label = { Text(item) },
+                selected = item == current,
+                onClick = { onSelect(item) },
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
             )
         }
     }

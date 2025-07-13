@@ -1,62 +1,65 @@
 package com.ahmad.coderstool.network
 
 import android.content.Context
-import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.ahmad.coderstool.util.LogUtils
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.json.JSONObject
-import java.io.OutputStreamWriter
-import java.net.HttpURLConnection
-import java.net.InetAddress
-import java.net.URL
+import kotlin.coroutines.resume
 
-suspend fun scanLocalNetworkAndHandshake(context: Context): Boolean = withContext(Dispatchers.IO) {
-    val baseIp = getDeviceBaseIp() ?: return@withContext false
+suspend fun scanLocalNetworkAndHandshake(context: Context): Boolean {
+    val backendIp = "192.168.1.19"
+    val backendPort = 8090
+    val handshakeUrl = "http://$backendIp:$backendPort/server/handshake"
 
-    for (i in 1..254) {
-        val targetIp = "$baseIp.$i"
-        val isSuccess = sendHandshake(targetIp)
-        if (isSuccess) {
-            Log.d("Handshake", "Handshake accepted by $targetIp")
-            // You can store this IP as backend server in preferences or database
-            return@withContext true
+    LogUtils.appendLog(context, "🔍 Attempting handshake with $handshakeUrl")
+
+    return sendHandshakeRequest(context, handshakeUrl)
+}
+
+private suspend fun sendHandshakeRequest(context: Context, url: String): Boolean =
+    suspendCancellableCoroutine { continuation ->
+        val requestQueue = Volley.newRequestQueue(context)
+
+        val deviceIp = getLocalIpAddress() ?: "unknown"
+        val requestBody = JSONObject().apply {
+            put("message", "requesting handshake for connection")
+            put("deviceIP", deviceIp)
         }
-    }
-    false
-}
 
-private fun getDeviceBaseIp(): String? {
-    try {
-        val ip = InetAddress.getLocalHost().hostAddress ?: return null
-        val parts = ip.split(".")
-        return if (parts.size == 4) "${parts[0]}.${parts[1]}.${parts[2]}" else null
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return null
-    }
-}
+        val request = JsonObjectRequest(
+            Request.Method.POST,
+            url,
+            requestBody,
+            { response ->
+                LogUtils.appendLog(context, "✅ Handshake successful: $response")
+                continuation.resume(true)
+            },
+            { error ->
+                LogUtils.appendLog(context, "❌ Handshake failed: ${error.message}")
+                continuation.resume(false)
+            }
+        )
 
-private fun sendHandshake(ip: String): Boolean {
+        requestQueue.add(request)
+    }
+
+fun getLocalIpAddress(): String? {
     return try {
-        val url = URL("http://$ip:8080/handshake/")
-        val conn = url.openConnection() as HttpURLConnection
-        conn.requestMethod = "POST"
-        conn.setRequestProperty("Content-Type", "application/json")
-        conn.connectTimeout = 500
-        conn.readTimeout = 500
-        conn.doOutput = true
-
-        val json = JSONObject()
-        json.put("message", "requesting handshake for connection")
-        json.put("deviceIP", InetAddress.getLocalHost().hostAddress)
-
-        OutputStreamWriter(conn.outputStream).use { it.write(json.toString()) }
-
-        val responseCode = conn.responseCode
-        conn.disconnect()
-
-        responseCode in 200..299
-    } catch (e: Exception) {
-        false
+        val interfaces = java.net.NetworkInterface.getNetworkInterfaces()
+        for (intf in interfaces) {
+            val addresses = intf.inetAddresses
+            for (addr in addresses) {
+                if (!addr.isLoopbackAddress && addr is java.net.Inet4Address) {
+                    return addr.hostAddress
+                }
+            }
+        }
+        null
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+        null
     }
 }

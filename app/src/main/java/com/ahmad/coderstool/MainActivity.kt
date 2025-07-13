@@ -7,8 +7,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.ahmad.coderstool.network.isWifiConnected
-import com.ahmad.coderstool.network.scanLocalNetworkAndHandshake
 import com.ahmad.coderstool.ui.MainScreen
+import com.ahmad.coderstool.network.scanLocalNetworkAndHandshake
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
